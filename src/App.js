@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+
+import Grid from './components/Grid';
+import Console from './components/Console';
+import Instructions from './components/Instructions';
+
 import './App.css';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+      <div className="app">
+        <header>
+          <h1 className="app-title">Toy robot challenge</h1>
         </header>
+        <div className="app-container">
+          <Grid size={{ rows: 5, columns: 5}} width="600" />
+          <Console />
+        </div>
+        <div className="app-container">
+          <Instructions />
+        </div>
       </div>
     );
   }
