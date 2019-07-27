@@ -4,8 +4,8 @@ import {
   move,
   report,
   left,
-  right,
-} from '../../services/grid';
+  right
+} from "../../services/grid";
 import {
   NORTH,
   MOVE,
@@ -13,17 +13,20 @@ import {
   RIGHT,
   PLACE,
   INITIALIZE_GRID
-} from '../../constants';
+} from "../../constants";
 
 const defaultState = {
   board: [],
-  currentPosition: { x: 0, y: 0, facing: NORTH },
+  currentPosition: { x: 0, y: 0, facing: NORTH }
 };
 
 function gridReducer(state = defaultState, { type, payload }) {
-  switch(type) {
+  switch (type) {
     case INITIALIZE_GRID: {
-      const emptyGrid = emptyGridOf({ rows: payload.rows, columns: payload.columns });
+      const emptyGrid = emptyGridOf({
+        rows: payload.rows,
+        columns: payload.columns
+      });
       const grid = place(emptyGrid, { x: 0, y: 0, facing: NORTH });
 
       return {
@@ -33,28 +36,28 @@ function gridReducer(state = defaultState, { type, payload }) {
       };
     }
     case MOVE: {
-      const newGrid = move(state.board)
+      const newGrid = move(state.board);
       return {
         board: newGrid,
         currentPosition: report(newGrid).option()
       };
     }
     case LEFT: {
-      const newGrid = left(state.board)
+      const newGrid = left(state.board);
       return {
         board: newGrid,
         currentPosition: report(newGrid).option()
       };
     }
     case RIGHT: {
-      const newGrid = right(state.board)
+      const newGrid = right(state.board);
       return {
         board: newGrid,
         currentPosition: report(newGrid).option()
       };
     }
     case PLACE: {
-      const newGrid = place(state.board, payload)
+      const newGrid = place(state.board, payload);
       return {
         board: newGrid,
         currentPosition: report(newGrid).option()
