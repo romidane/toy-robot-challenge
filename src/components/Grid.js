@@ -14,26 +14,28 @@ class Grid extends Component {
 
   renderCells() {
     return this.props.grid.map((row, index, array) => {
-      // No need to render the last row as we are 0 based
-      // index
+      // No need to render the last row as we are 0 based index
       if (index === array.length - 1) return null;
 
       return (
         <div className="app-grid-cell-container" key={uuid()}>
-          {row.map(cell => (
-            <Cell
-              key={uuid()}
-              width={this.cellWidth()}
-              height={this.cellWidth()}
-            />
-          ))}
+          {row.map((cell, cellIndex, cellArray) => {
+            if (cellIndex === cellArray.length - 1) return null;
+            return (
+              <Cell
+                key={uuid()}
+                width={this.cellWidth()}
+                height={this.cellWidth()}
+              />
+            );
+          })}
         </div>
       );
     });
   }
 
   cellWidth() {
-    return this.props.width / this.props.size.columns;
+    return this.props.width / this.props.size;
   }
 
   render() {

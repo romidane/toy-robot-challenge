@@ -1,5 +1,5 @@
-import { Just, Nothing } from 'crocks/Maybe';
-import { head } from 'crocks/pointfree';
+import { Just, Nothing } from "crocks/Maybe";
+import { head } from "crocks/pointfree";
 import {
   NORTH,
   SOUTH,
@@ -7,7 +7,7 @@ import {
   WEST,
   ANTICLOCKWISE,
   CLOCKWISE
-} from '../constants';
+} from "../constants";
 
 /* data Grid = [[Maybe { facing: String }]] */
 
@@ -25,15 +25,14 @@ const cords = {
   [WEST]: 270
 };
 
-// emptyGridOf :: ({ row: Int, columns: Int }) -> Grid
-export const emptyGridOf = ({rows = 5, columns = 5}) =>
-  Array(rows)
+// emptyGridOf :: ({ x: Int, y: Int }) -> Grid
+export const emptyGridOf = ({ x = 5, y = 5 }) =>
+  Array(x)
     .fill([])
-    .map((el) => Array(columns).fill(Nothing()));
-
+    .map(el => Array(y).fill(Nothing()));
 
 // isValidDirection :: String -> Boolean
-const isValidDirection = (position) =>
+const isValidDirection = position =>
   [NORTH, SOUTH, EAST, WEST].includes(position);
 
 // coordsWithinBounds :: Grid -> { x: Int, y: Int} -> Boolean
@@ -47,10 +46,10 @@ const coordsWithinBounds = (grid, { x, y }) => {
   if (y > columnLength || y < 0) return false;
 
   return true;
-}
+};
 
 // report :: Grid -> Maybe Location
-export const report = (grid) => {
+export const report = grid => {
   return grid.reduce((acc, row, rowIndex) => {
     if (!acc.equals(Nothing())) return acc;
 
@@ -68,11 +67,10 @@ export const report = (grid) => {
       });
     }, Nothing());
   }, Nothing());
-}
+};
 
 // place :: Grid -> Location -> Grid
 export const place = (grid, { x, y, facing }) => {
-
   if (!isValidDirection(facing)) return grid;
 
   if (!coordsWithinBounds(grid, { x, y })) return grid;
@@ -80,17 +78,17 @@ export const place = (grid, { x, y, facing }) => {
   return grid.map((row, rowIndex) => {
     return row.map((column, columnIndex) => {
       if (rowIndex === x && columnIndex === y) {
-        return Just({facing});
+        return Just({ facing });
       }
 
       return Nothing();
-    })
+    });
   });
 };
 
 // moveByOneUnit :: Location -> Location
 const moveByOneUnit = ({ x, y, facing }) => {
-  switch(facing) {
+  switch (facing) {
     case NORTH:
       return { x, y: y + 1, facing };
     case EAST:
@@ -102,15 +100,14 @@ const moveByOneUnit = ({ x, y, facing }) => {
     default:
       return { x, y, facing };
   }
-}
+};
 
 // findKeyByValue :: Int -> Maybe String
-const findKeyByValue = (val) => {
-  const keys = Object.keys(cords)
-    .filter((key) => cords[key] === val);
+const findKeyByValue = val => {
+  const keys = Object.keys(cords).filter(key => cords[key] === val);
 
   return head(keys);
-}
+};
 
 // rotate :: String -> Maybe String
 const rotate = (facing, direction) => {
@@ -126,30 +123,30 @@ const rotate = (facing, direction) => {
   const result = findKeyByValue(next);
 
   return result.alt(Just(facing));
-}
+};
 
 // rotateRight :: Location -> Location
 const rotateRight = ({ x, y, facing }) => {
   // reset
   if (facing === WEST) {
-    return {x, y, facing: NORTH };
+    return { x, y, facing: NORTH };
   }
 
-  return {x, y, facing: rotate(facing, CLOCKWISE).option() };
-}
+  return { x, y, facing: rotate(facing, CLOCKWISE).option() };
+};
 
 // rotateLeft :: Location -> Location
 const rotateLeft = ({ x, y, facing }) => {
   // reset
   if (facing === NORTH) {
-    return {x, y, facing: WEST };
+    return { x, y, facing: WEST };
   }
 
-  return {x, y, facing: rotate(facing, ANTICLOCKWISE).option() };
-}
+  return { x, y, facing: rotate(facing, ANTICLOCKWISE).option() };
+};
 
 // move :: Grid -> Grid
-export const move = (grid) => {
+export const move = grid => {
   const position = report(grid);
 
   if (position.equals(Nothing())) {
@@ -162,7 +159,7 @@ export const move = (grid) => {
 };
 
 // left :: Grid -> Grid
-export const left = (grid) => {
+export const left = grid => {
   const position = report(grid);
 
   if (position.equals(Nothing())) {
@@ -172,10 +169,10 @@ export const left = (grid) => {
   const nextPosition = rotateLeft(position.option());
 
   return place(grid, nextPosition);
-}
+};
 
 // right :: Grid -> Grid
-export const right = (grid) => {
+export const right = grid => {
   const position = report(grid);
 
   if (position.equals(Nothing())) {
@@ -185,13 +182,13 @@ export const right = (grid) => {
   const nextPosition = rotateRight(position.option());
 
   return place(grid, nextPosition);
-}
+};
 
 // gridToArray :: Grid -> [ [a] ]
-export const gridToArray = (grid) => {
-  return grid.map((row) => {
-    return row.map((column) => {
+export const gridToArray = grid => {
+  return grid.map(row => {
+    return row.map(column => {
       return column.toString();
-    })
-  })
-}
+    });
+  });
+};

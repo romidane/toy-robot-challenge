@@ -1,27 +1,19 @@
 import React from "react";
 import { Provider } from "react-redux";
-
-import Enzyme from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
-
-import { expect } from "chai";
-
 import { fakeStore } from "../testHelpers";
 import Cell from "./Cell";
 import Grid from "./Grid";
 
-Enzyme.configure({ adapter: new Adapter() });
-
 const mountApp = store =>
-  Enzyme.mount(
+  mount(
     <Provider store={store}>
-      <Grid width="400" size={{ rows: 2, columns: 2 }} />
+      <Grid width="400" size={4} />
     </Provider>
   );
 
-const state = {
+const defaultState = {
   grid: {
-    board: [[{}, {}], [{}, {}]],
+    board: [],
     currentPosition: {
       x: 0,
       y: 0,
@@ -34,31 +26,75 @@ describe("<Grid />", () => {
   let wrapper;
   let store;
 
-  beforeEach(() => {
-    store = fakeStore(state);
-    wrapper = mountApp(store);
-  });
+  beforeEach(() => {});
   it("initializes the grid on component mount", () => {
-    mountApp(store);
+    const store = fakeStore(defaultState);
+
+    mount(
+      <Provider store={store}>
+        <Grid width="400" size={1} />
+      </Provider>
+    );
 
     expect(
       store.dispatch.calledWith({
         type: "INITIALIZE_GRID",
         payload: {
-          rows: 2,
-          columns: 2
+          size: 2
         }
       })
     ).to.equal(true, "the action INITIALIZE_GRID was not called correctly");
   });
-  it("renders the correct number of cells", () => {
+
+  it("render a 1x1 grid", () => {
+    const store = fakeStore({
+      grid: {
+        ...defaultState.grid,
+        board: [[{}, {}], [{}, {}]]
+      }
+    });
+
+    const wrapper = mount(
+      <Provider store={store}>
+        <Grid width="400" size={1} />
+      </Provider>
+    );
     const cells = wrapper.find(Cell);
 
-    expect(cells.length).to.equal(2, "2 cells were not rendered");
-    expect(cells.at(0).props("style")).to.eql({ width: 200, height: 200 });
+    expect(cells.length).to.equal(1, "1 cell should be rendered");
+  });
+
+  it("renders multiple cells", () => {
+    const store = fakeStore({
+      grid: {
+        ...defaultState.grid,
+        board: [[{}, {}], [{}, {}], [{}, {}]]
+      }
+    });
+
+    const wrapper = mount(
+      <Provider store={store}>
+        <Grid width="400" size={2} />
+      </Provider>
+    );
+    const cells = wrapper.find(Cell);
+
+    expect(cells.length).to.equal(2, "2 cell should be rendered");
   });
 
   it("renders cells of even height and width", () => {
+    const store = fakeStore({
+      grid: {
+        ...defaultState.grid,
+        board: [[{}, {}, {}], [{}, {}, {}], [{}, {}, {}], [{}, {}, {}]]
+      }
+    });
+
+    const wrapper = mount(
+      <Provider store={store}>
+        <Grid width="600" size={3} />
+      </Provider>
+    );
     const cells = wrapper.find(Cell);
 
     cells.forEach(cell => {

@@ -24,8 +24,8 @@ function gridReducer(state = defaultState, { type, payload }) {
   switch (type) {
     case INITIALIZE_GRID: {
       const emptyGrid = emptyGridOf({
-        rows: payload.rows,
-        columns: payload.columns
+        x: payload.size,
+        y: payload.size
       });
       const grid = place(emptyGrid, { x: 0, y: 0, facing: NORTH });
 
