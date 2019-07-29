@@ -34,6 +34,18 @@ describe("<Console />", () => {
     expect(logs.text()).to.contain("baz");
   });
 
+  describe("When no command is submitted", () => {
+    it("does nothing", () => {
+      const store = fakeStore(state);
+      const wrapper = mountApp(store);
+      const form = wrapper.find(".app-console__form");
+
+      form.simulate("submit");
+
+      expect(store.dispatch.callCount).to.equal(0);
+    });
+  });
+
   describe("When a command is submitted", () => {
     let wrapper;
     let store;

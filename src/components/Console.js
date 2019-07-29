@@ -1,63 +1,57 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import { connect } from "react-redux";
-import uuid from 'uuid/v4';
-import serializeForm from 'form-serialize';
+import uuid from "uuid/v4";
+import serializeForm from "form-serialize";
 
-import {
-  move,
-  left,
-  right,
-  place,
-  report,
-  log,
-} from '../redux/actions';
-
+import { move, left, right, place, report, log } from "../redux/actions";
 
 class Console extends Component {
   parseCommand(command) {
-    const cleanCommand = command.replace(/\s/g, '');
-    const matchCommandArgsRegex =  /\w+\(([A-Za-z,0-9"']*)\)/gi;
+    const cleanCommand = command.replace(/\s/g, "");
+    const matchCommandArgsRegex = /\w+\(([A-Za-z,0-9"']*)\)/gi;
 
     const result = matchCommandArgsRegex.exec(cleanCommand);
 
-    if (!result) return { command: '', args: []};
+    if (!result) return { command: "", args: [] };
 
     return {
       command: cleanCommand,
-      args: result[1].split(',')
-    }
+      args: result[1].split(",")
+    };
   }
 
   runCommand({ command, args }) {
     const matchPlaceCommandRegex = /place\(\d+,\d+,("|')?\w+("|')?\)/g;
 
-    if (command === 'move()') {
+    if (command === "move()") {
       return this.props.move();
     }
 
-    if (command === 'left()') {
+    if (command === "left()") {
       return this.props.left();
     }
 
-    if (command === 'right()') {
+    if (command === "right()") {
       return this.props.right();
     }
 
-    if (command === 'report()') {
+    if (command === "report()") {
       return this.props.report(this.props.currentPosition);
     }
 
     if (command.match(matchPlaceCommandRegex)) {
-      return this.props.place(...args)
+      return this.props.place(...args);
     }
 
-    return this.props.log('Invalid command');
+    return this.props.log("Invalid command");
   }
 
   handleSubmit(event) {
     event.preventDefault();
 
     const { command } = serializeForm(event.target, { hash: true });
+
+    if (!command) return;
 
     this.props.log(command);
 
@@ -69,13 +63,13 @@ class Console extends Component {
   }
 
   renderLog() {
-   return (
-    <ul className="app-shell-body">
-      {this.props.logs.map((logItem) => {
-        return <li key={uuid()}>{logItem}</li>
-      })}
-    </ul>
-   )
+    return (
+      <ul className="app-shell-body">
+        {this.props.logs.map(logItem => {
+          return <li key={uuid()}>{logItem}</li>;
+        })}
+      </ul>
+    );
   }
 
   render() {
@@ -84,12 +78,20 @@ class Console extends Component {
         <div className="app-shell-top-bar">
           <span>Console</span>
         </div>
-          <form className="app-console__form" onSubmit={(event) => this.handleSubmit(event)}>
-            <input autoFocus placeholder="Type a command" type="text" name="command" />
-          </form>
-          {this.renderLog()}
+        <form
+          className="app-console__form"
+          onSubmit={event => this.handleSubmit(event)}
+        >
+          <input
+            autoFocus
+            placeholder="Type a command"
+            type="text"
+            name="command"
+          />
+        </form>
+        {this.renderLog()}
       </div>
-    )
+    );
   }
 }
 
@@ -99,11 +101,14 @@ const mapStateToProps = (state, ownProps) => ({
   currentPosition: state.grid.currentPosition
 });
 
-export default connect(mapStateToProps, {
-  move,
-  left,
-  right,
-  report,
-  place,
-  log
-} )(Console);
+export default connect(
+  mapStateToProps,
+  {
+    move,
+    left,
+    right,
+    report,
+    place,
+    log
+  }
+)(Console);
