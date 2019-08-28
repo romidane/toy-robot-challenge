@@ -2,6 +2,8 @@
 A simple app which allows to to send commands to a robot on a board.
 The simple app is written using ReactJs and the game mechanism is stateless
 
+[See the deployed app here](https://tender-brattain-a8c198.netlify.com/)
+
 ## Getting started
 This application is compatible with Node > v8.10
 
